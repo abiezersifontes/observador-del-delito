@@ -1,0 +1,3 @@
+-Agregar validacion tomando en cuenta el soft deleting
+-Corregir la insersion en el campo periodico
+-Mejorar la determinacion de los campos estado, ciudad, municipio
