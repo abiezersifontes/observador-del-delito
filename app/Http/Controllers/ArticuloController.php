@@ -227,7 +227,7 @@ class ArticuloController extends Controller
 
         if(strpos($descs[$k], 'estado Bolívar') or strpos($descs[$k], 'Estado Bolívar')){
           $estado[$k] = 'Bolivar';
-          $municipio[$k] = 'Desconocida';
+          $municipio[$k] = 'Desconocido';
           $parroquia[$k] = 'Desconocida';
         }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') or
         strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres')
@@ -278,10 +278,11 @@ class ArticuloController extends Controller
           $articulo->descripcion = $array['descripcion'];
           $articulo->link = $array['link'];
           $articulo->fecha = $array['fecha'];
-          $articulo->delito = $array['delito'];
           $articulo->estado = $array['estado'];
           $articulo->municipio = $array['municipio'];
           $articulo->parroquia = $array['parroquia'];
+          $articulo->periodico = $array['periodico'];
+          $articulo->delito = $array['delito'];
           $articulo->save();
 
         }
