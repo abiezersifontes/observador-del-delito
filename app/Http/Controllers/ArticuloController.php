@@ -146,6 +146,7 @@ class ArticuloController extends Controller
       $crawler = $client->request('GET', 'http://www.diarioelprogreso.net/sucesos');
       //$crawler = $client->request('GET', 'http://www.diarioelprogreso.net/sucesos.html?start=15');
 
+      $periodico = 'el progreso';
 
       //Obtener los links
       $links = str_replace('html#disqus_threa','',$crawler->filter('a[class="jwDisqusListingCounterLink"]')->each(function ($node, $i) { return strval($node->attr('href')); }));
@@ -221,16 +222,36 @@ class ArticuloController extends Controller
         }elseif(strpos($descs[$k],'electrocutado') or strpos($descs[$k],'murio electrocutado') or strpos($descs[$k],'colision de vehiculos')) {
           $delito[$k] = 'Trafico de drogas';
         }else{
-          $delito[$k] = 'Delito Desconocido';
+          $delito[$k] = 'Indefinido';
         }
 
-        if(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') ){
+        if(strpos($descs[$k], 'estado Bolívar') or strpos($descs[$k], 'Estado Bolívar')){
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Desconocida';
+          $parroquia[$k] = 'Desconocida';
+        }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') or
+        strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres')
+        or strpos($descs[$k],'municipio heres')){
+          $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Desconocida';
+        }elseif(strpos($descs[$k],'Marhuanta')){
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Marhuanta';
+        }elseif (strpos($descs[$k],'Los Coquitos')) {
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Los Coquitos';
+        }elseif (strpos($descs[$k],'La Sabanita')){
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Los Coquitos';
         }else {
+          $estado[$k] = 'Desconocido';
           $municipio[$k] = 'Desconocido';
+          $parroquia[$k] = 'Desconocido';
         }
-        $estado[$k] = 'Bolivar';
-        $parroquia[$k] = 'Desconocida';
 
 
         $array = [
@@ -238,7 +259,7 @@ class ArticuloController extends Controller
           "descripcion" => $descs[$k],
           "link"        => $links[$k],
           "fecha"       => $fecha[$k],
-          "periodico"   => 'el progreso',
+          "periodico"   => $periodico,
           "delito"      => $delito[$k],
           "estado"      => $estado[$k],
           "municipio"   => $municipio[$k],
