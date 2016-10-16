@@ -17,6 +17,7 @@ Route::group(['middleware' => 'auth'],function(){
         'uses'  =>  'ArticuloController@index',
         'as'    =>  'inicio'
     ]);
+    Route::get('home', 'ArticuloController@index');
 
     Route::get('extraer', [
         'uses'   => 'ArticuloController@extraer',
@@ -54,26 +55,26 @@ Route::group(['middleware' => 'auth'],function(){
 
     // Registration routes...
     Route::get('register', [
-        'uses'  =>  'Auth\AuthController@getRegister',
+        'uses'  =>  'UserController@getRegister',
         'as'    =>  'register'
     ]);
-    
-    Route::post('register', [
-        'uses'  =>  'Auth\AuthController@postRegister',
-        'as'    =>  'register'
+
+    Route::post('postRegister', [
+        'uses'  =>  'UserController@postRegister',
+        'as'    =>  'postRegister'
     ]);
-    
+
     Route::get('getperfil',[
         'uses'  =>  'UserController@getperfil',
         'as'    =>  'getperfil'
     ]);
-    
+
     Route::post('postperfil',[
         'uses'  =>  'UserController@postperfil',
         'as'    =>  'postperfil'
     ]);
-    
-});    
+
+});
 
 
 // Authentication routes...
@@ -82,6 +83,9 @@ Route::get('/', [
     'as'    =>  'login'
 ]);
 
+Route::get('login','Auth\AuthController@getLogin');
+Route::get('auth/login','Auth\AuthController@getLogin');
+Route::post('auth/login','Auth\AuthController@postLogin');
 Route::post('login', [
     'uses'  =>  'Auth\AuthController@postLogin',
     'as'    =>  'login'

@@ -32,8 +32,8 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest', ['except' => ['getLogout','getRegister','postRegister']]);
-        
-       
+
+
     }
 
     /**
@@ -66,9 +66,9 @@ class AuthController extends Controller
         ]);
         $user->role = 'user';
         $user->save();
-        
+
         return redirect()->route('inicio');
     }
-    
-    
+
+
 }

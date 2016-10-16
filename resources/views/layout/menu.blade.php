@@ -48,7 +48,7 @@
                 </button>
                 <a class="navbar-brand" href="{{route('inicio')}}">Observador Digital del Delito</a>
             </div>
-            
+
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
                 <li class="dropdown">
@@ -57,9 +57,11 @@
                         <li>
                             <a href="{{route('getperfil')}}"><i class="fa fa-fw fa-user"></i> Perfil</a>
                         </li>
+                        @if(!Auth::user()->role =="admin")
                         <li>
                             <a href="{{route('register')}}"><i class="fa fa-fw fa-user"></i> Registrar usuario</a>
                         </li>
+                        @endif
                         <li class="divider"></li>
                         <li>
                             <a href="{{route('logout')}}"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
@@ -67,7 +69,7 @@
                     </ul>
                 </li>
             </ul>
-           
+
 
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -98,17 +100,19 @@
 
           @section('sidebar')
           @show
-        
+
             <div class="container-fluid">
                <div class="row">
-                  <div class="col-md-11 col-xs-11">
+                  <div class="col-md-12 col-xs-12">
                       @section('fondo')
                       @show
                    </div>
                 </div>
             </div>
+            @unless (!Auth::check())
         </div>
     </div>
+    @endunless
       <!-- /#page-wrapper -->
 
     <!-- jQuery -->
