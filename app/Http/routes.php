@@ -11,23 +11,92 @@
 |
 */
 
-Route::get('/', function(){
-  return view('inicio');
-})->name('inicio');
+Route::group(['middleware' => 'auth'],function(){
 
-//
-Route::get('extraer', function(){
-  return view('extraer');
-})->name('extraer');
+    Route::get('inicio', [
+        'uses'  =>  'ArticuloController@index',
+        'as'    =>  'inicio'
+    ]);
 
-Route::resource('articulo', 'ArticuloController');
-Route::get('scrapprogre', 'ArticuloController@scrapprogre')->name('scrapprogre');
-Route::get('listarticulos','ArticuloController@listarticulos')->name('listarticulos');
-Route::get('modal/{id}', 'ArticuloController@modal')->name('modal');
-Route::put('modificar/{id}','ArticuloController@modal')->name('modificar');
+    Route::get('extraer', [
+        'uses'   => 'ArticuloController@extraer',
+        'as'     => 'extraer'
+    ]);
 
-Route::get('graficar1/{desde}/{hasta}','ArticuloController@graficar')->name('graficar');
+    Route::resource('articulo', 'ArticuloController');
 
-Route::get('graficar', function(){
-  return view('graficar');
-})->name('graficar');
+    Route::get('scrapprogre', [
+        'uses'  =>  'ArticuloController@scrapprogre',
+        'as'    =>  'scrapprogre'
+    ]);
+
+    Route::get('listarticulos',[
+        'uses'  =>  'ArticuloController@listarticulos',
+        'as'    =>  'listarticulos'
+    ]);
+
+    Route::get('modal/{id}', 'ArticuloController@modal');
+
+    Route::put('modificar/{id}','ArticuloController@modal');
+
+    Route::get('graficar1/{desde}/{hasta}', 'ArticuloController@graficar');
+
+    Route::get('graficar_barra1/{anio}/{mes}','ArticuloController@graficar_barra');
+
+    Route::get('graficar', function(){
+      return view('graficar');
+    })->name('graficar');
+
+    Route::get('graficar_barra', function(){
+      return view('graficar_barra');
+    })->name('graficar_barra');
+
+
+    // Registration routes...
+    Route::get('register', [
+        'uses'  =>  'Auth\AuthController@getRegister',
+        'as'    =>  'register'
+    ]);
+    
+    Route::post('register', [
+        'uses'  =>  'Auth\AuthController@postRegister',
+        'as'    =>  'register'
+    ]);
+    
+    Route::get('getperfil',[
+        'uses'  =>  'UserController@getperfil',
+        'as'    =>  'getperfil'
+    ]);
+    
+    Route::post('postperfil',[
+        'uses'  =>  'UserController@postperfil',
+        'as'    =>  'postperfil'
+    ]);
+    
+});    
+
+
+// Authentication routes...
+Route::get('/', [
+    'uses'  =>  'Auth\AuthController@getLogin',
+    'as'    =>  'login'
+]);
+
+Route::post('login', [
+    'uses'  =>  'Auth\AuthController@postLogin',
+    'as'    =>  'login'
+]);
+
+Route::get('logout', [
+    'uses'  =>  'Auth\AuthController@getLogout',
+    'as'    =>  'logout'
+]);
+
+
+// Password reset link request routes...
+Route::get('password/email', 'Auth\PasswordController@getEmail');
+Route::post('password/email', 'Auth\PasswordController@postEmail');
+
+// Password reset routes...
+Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
+Route::post('password/reset', 'Auth\PasswordController@postReset');

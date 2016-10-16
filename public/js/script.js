@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  Carga();
+  Carga(1);
 });
 
 $(document).on('click','.pagination a',function(e){
@@ -33,12 +33,12 @@ function Mostrar(btn){
 }
 
 
-function Carga(){
+function Carga(pagina){
 	var tablaDatos = $("#datos");
 	var route = "listarticulos";
 
 	$("#datos").empty();
-  var page = 1;
+  var page = pagina;
   var route = "listarticulos";
   token = $('#token').val();
   $.ajax({
@@ -63,7 +63,7 @@ function Eliminar(btn){
     type: 'DELETE',
     dataType:'json',
     success:function(){
-      Carga();
+      Carga(1);
 			$("#menssage-delete").fadeIn();
       $("#menssage-delete").fadeOut("slow");
     },
@@ -90,7 +90,9 @@ $("#actualizar").click(function(){
 		dataType: 'json',
 		data: {id:id,titulo:titulo,delito:delito,link:link,descripcion:descripcion,periodico:periodico},
 		success: function(json){
-      Carga();
+      pagina = $('.active').val();
+      alert(pagina);
+      Carga(pagina);
 			$("#myModal").modal('toggle');
 			$("#menssage-update").fadeIn();
       $("#menssage-update").fadeOut("slow");

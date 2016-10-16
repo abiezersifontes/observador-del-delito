@@ -21,9 +21,13 @@ class ArticuloController extends Controller
      */
     public function index()
     {
+        return view('inicio');
+    }
+    
+    
+    public function extraer(){
         return view('extraer');
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -103,12 +107,13 @@ class ArticuloController extends Controller
       /*$articulos = Articulo::whereBetween('fecha', [$fecha,  '2016-08-31'])->get();*/
       $delitos = DB::table('articulos')
                     ->select('delito')
-
+                    ->where('municipio','=','Heres')
                     ->distinct()
                     ->get();
       //$cant_delitos =
       foreach ($delitos as $delito) {
         $cant_delitos[] = DB::table('articulos')
+                        ->where('municipio','=','Heres')
                         ->where('delito','=',$delito->delito)
                         ->whereBetween('fecha', [$desde, $hasta])
                         ->count();
@@ -117,6 +122,42 @@ class ArticuloController extends Controller
       $info = [$delitos,$cant_delitos];
       return response()->json([$info]);
     }
+
+
+    public function getUltimoDiaMes($elAnio,$elMes) {
+    return date("d",(mktime(0,0,0,$elMes+1,1,$elAnio)-1));
+   }
+
+
+
+   public function graficar_barra($anio,$mes)
+   {
+       $primer_dia=1;
+       $ultimo_dia=$this->getUltimoDiaMes($anio,$mes);
+       $fecha_inicial=date("Y-m-d H:i:s", strtotime($anio."-".$mes."-".$primer_dia) );
+       $fecha_final=date("Y-m-d H:i:s", strtotime($anio."-".$mes."-".$ultimo_dia) );
+
+       $delitos = DB::table('articulos')
+                     ->where('municipio','=','Heres')
+                     ->whereBetween('fecha', [$fecha_inicial, $fecha_final])
+                     ->get();
+
+       $ct=count($delitos);
+
+       for($d=1;$d<=$ultimo_dia;$d++){
+           $registros[$d]=0;
+       }
+
+       foreach($delitos as $delito){
+       $diasel=intval(date("d",strtotime($delito->fecha) ) );
+
+       $registros[$diasel]++;
+       }
+
+
+       $data=array("totaldias"=>$ultimo_dia, "registrosdia" =>$registros);
+       return   json_encode($data);
+   }
 
 
     public function listarticulos(Request $request){
@@ -146,6 +187,7 @@ class ArticuloController extends Controller
       $crawler = $client->request('GET', 'http://www.diarioelprogreso.net/sucesos');
       //$crawler = $client->request('GET', 'http://www.diarioelprogreso.net/sucesos.html?start=15');
 
+      $periodico = 'el progreso';
 
       //Obtener los links
       $links = str_replace('html#disqus_threa','',$crawler->filter('a[class="jwDisqusListingCounterLink"]')->each(function ($node, $i) { return strval($node->attr('href')); }));
@@ -221,16 +263,36 @@ class ArticuloController extends Controller
         }elseif(strpos($descs[$k],'electrocutado') or strpos($descs[$k],'murio electrocutado') or strpos($descs[$k],'colision de vehiculos')) {
           $delito[$k] = 'Trafico de drogas';
         }else{
-          $delito[$k] = 'Delito Desconocido';
+          $delito[$k] = 'Indefinido';
         }
 
-        if(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') ){
-          $municipio[$k] = 'Heres';
-        }else {
+        if(strpos($descs[$k], 'estado Bolívar') or strpos($descs[$k], 'Estado Bolívar')){
+          $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Desconocido';
+          $parroquia[$k] = 'Desconocida';
+        }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') or
+        strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres')
+        or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'la capital bolivarense')){
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Desconocida';
+        }elseif(strpos($descs[$k],'Marhuanta')){
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Marhuanta';
+        }elseif (strpos($descs[$k],'Los Coquitos')) {
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Los Coquitos';
+        }elseif (strpos($descs[$k],'La Sabanita')){
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Los Coquitos';
+        }else {
+          $estado[$k] = 'Desconocido';
+          $municipio[$k] = 'Desconocido';
+          $parroquia[$k] = 'Desconocido';
         }
-        $estado[$k] = 'Bolivar';
-        $parroquia[$k] = 'Desconocida';
 
 
         $array = [
@@ -238,7 +300,7 @@ class ArticuloController extends Controller
           "descripcion" => $descs[$k],
           "link"        => $links[$k],
           "fecha"       => $fecha[$k],
-          "periodico"   => 'el progreso',
+          "periodico"   => $periodico,
           "delito"      => $delito[$k],
           "estado"      => $estado[$k],
           "municipio"   => $municipio[$k],
@@ -257,10 +319,11 @@ class ArticuloController extends Controller
           $articulo->descripcion = $array['descripcion'];
           $articulo->link = $array['link'];
           $articulo->fecha = $array['fecha'];
-          $articulo->delito = $array['delito'];
           $articulo->estado = $array['estado'];
           $articulo->municipio = $array['municipio'];
           $articulo->parroquia = $array['parroquia'];
+          $articulo->periodico = $array['periodico'];
+          $articulo->delito = $array['delito'];
           $articulo->save();
 
         }
@@ -269,5 +332,5 @@ class ArticuloController extends Controller
     }
 
 
-
+   
 }

@@ -5,8 +5,8 @@
       <div class="col-lg-12 col-md-12 ">
         </br></br>
         
-          <h3><strong>CESIC </strong>"CENTRO DE ESTUDIOS SOCIALES Y CULTURALES"</h3>
-          <h4>Sistema de Recoleccion de Susesos</h4>
+          <h3><strong>CESYC </strong>"CENTRO DE ESTUDIOS SOCIALES Y CULTURALES"</h3>
+          <h4>Observador Digital del Delito</h4>
         </br></br>
       </div>
     </div>
