@@ -270,9 +270,8 @@ class ArticuloController extends Controller
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Desconocido';
           $parroquia[$k] = 'Desconocida';
-        }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') or
-        strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres')
-        or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'la capital bolivarense')){
+        }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') or strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'la capital bolivarense')){
+
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
           $parroquia[$k] = 'Desconocida';
@@ -280,6 +279,11 @@ class ArticuloController extends Controller
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
           $parroquia[$k] = 'Marhuanta';
+        }elseif (strpos($descs[$k],'Los Coquitos')) {
+          $estado[$k] = 'Bolivar';
+          $municipio[$k] = 'Heres';
+          $municipio[$k] = 'Heres';
+          $parroquia[$k] = 'Los Coquitos';
         }elseif (strpos($descs[$k],'Los Coquitos')) {
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
