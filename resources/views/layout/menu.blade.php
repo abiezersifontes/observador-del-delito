@@ -57,7 +57,7 @@
                         <li>
                             <a href="{{route('getperfil')}}"><i class="fa fa-fw fa-user"></i> Perfil</a>
                         </li>
-                        @if(!Auth::user()->role =="admin")
+                        @if(Auth::user()->role =="admin")
                         <li>
                             <a href="{{route('register')}}"><i class="fa fa-fw fa-user"></i> Registrar usuario</a>
                         </li>
