@@ -11,6 +11,8 @@
 |
 */
 
+
+
 Route::group(['middleware' => 'auth'],function(){
 
     Route::get('inicio', [
@@ -35,6 +37,8 @@ Route::group(['middleware' => 'auth'],function(){
         'uses'  =>  'ArticuloController@listarticulos',
         'as'    =>  'listarticulos'
     ]);
+
+    Route::get('reestablecer', 'ArticuloController@reestablecer');
 
     Route::get('modal/{id}', 'ArticuloController@modal');
 

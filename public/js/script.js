@@ -65,7 +65,7 @@ function Eliminar(btn){
     success:function(){
       Carga(1);
 			$("#menssage-delete").fadeIn();
-      $("#menssage-delete").fadeOut("slow");
+      //$("#menssage-delete").fadeOut("slow");
     },
     error:function(xhr, ajaxOptions, thrownError){
       console.log(xhr.status);

@@ -33,8 +33,6 @@
       </div>
     </div>
   </div>
-
-
   <div id="menssage-update" class=" alert alert-success alert-dismissible" role="alert" style="display:none">
     <strong>Datos Actualizados</strong>
   </div>

@@ -23,8 +23,8 @@ class ArticuloController extends Controller
     {
         return view('inicio');
     }
-    
-    
+
+
     public function extraer(){
         return view('extraer');
     }
@@ -99,7 +99,7 @@ class ArticuloController extends Controller
     {
         $articulo = Articulo::find($id);
         $articulo->delete();
-        return response()->json(['mensaje'=>'datos actualizados']);
+        return response()->json(['mensaje'=> "datos eliminados"]);
     }
 
     public function graficar($desde,$hasta){
@@ -235,43 +235,20 @@ class ArticuloController extends Controller
         $crawler = $client->request('GET',$links[$i]);
         $desc1[] = implode($crawler->filter('article[class="item-page"]')->each(function ($node) { return $node->text(); }));
       }
-      //sanear descripcion
-      $subcadena = "View Comments";
+
       for ($k=0; $k <15 ; $k++) {
-        $posubcadena = strpos ($desc1[$k], $subcadena);
-        $string2 = substr ($desc1[$k], ($posubcadena+13));
-        $string3 = explode('//<!',$string2);
-        $string4 = trim($string3[0]);
-        $descs[$k] = $string4;
-        //determinar delito
-        if(strpos($descs[$k], 'asesinado') or strpos($descs[$k],'el presunto asesino') or strpos($descs[$k],'asesinada') or strpos($descs[$k],'asesinado') or
-                strpos($descs[$k],'asesinado') or strpos($descs[$k],'asesinato') or strpos($descs[$k],'lo ultimaron') or strpos($descs[$k],'fue ultimado') or
-                strpos($descs[$k],'fue acribillado')  or strpos($descs[$k],'luego de recibir un tiro') or strpos($descs[$k],'dio muerte') or
-                strpos($descs[$k],'cadáver tiroteado')){
-            $delito[$k] = 'Asesinato';
-        }elseif(strpos($descs[$k], 'robo') or strpos($descs[$k],'los presuntos ladrones') or strpos($descs[$k],'los presuntos asaltantes') or
-                strpos($descs[$k],'asalto')) {
-          $delito[$k] = 'Robo';
-        }elseif(strpos($descs[$k], 'Extorsion') or strpos($descs[$k],'extorsion') or strpos($descs[$k],'extorsionadores') or strpos($descs[$k],'extorsionaron') or
-                strpos($descs[$k],'extorsionaban')) {
-          $delito[$k] = 'Extorsion';
-        }elseif(strpos($descs[$k], 'Violador') or strpos($descs[$k],'violador') or strpos($descs[$k],'presunto violador') or strpos($descs[$k],'haber abusado sexualmente')  or
-                strpos($descs[$k],'abusado sexualmente')) {
-          $delito[$k] = 'Violacion';
-        }elseif(strpos($descs[$k],'panelas de cocaína') or strpos($descs[$k],'cocaína') or strpos($descs[$k],'trafico de droga')) {
-          $delito[$k] = 'Trafico de drogas';
-        }elseif(strpos($descs[$k],'electrocutado') or strpos($descs[$k],'murio electrocutado') or strpos($descs[$k],'colision de vehiculos')) {
-          $delito[$k] = 'Trafico de drogas';
-        }else{
-          $delito[$k] = 'Indefinido';
-        }
+        //sanear descripcion
+        $descs[$k] = $this->sanear_desc($desc1[$k]);
+
+        //definir delitos
+        $delito[$k] = $this->def_delito($descs[$k]);
 
         if(strpos($descs[$k], 'estado Bolívar') or strpos($descs[$k], 'Estado Bolívar')){
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Desconocido';
           $parroquia[$k] = 'Desconocida';
-        }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES') or strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'la capital bolivarense')){
-
+        }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES')
+        or strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'la capital bolivarense')){
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
           $parroquia[$k] = 'Desconocida';
@@ -281,7 +258,6 @@ class ArticuloController extends Controller
           $parroquia[$k] = 'Marhuanta';
         }elseif (strpos($descs[$k],'Los Coquitos')) {
           $estado[$k] = 'Bolivar';
-          $municipio[$k] = 'Heres';
           $municipio[$k] = 'Heres';
           $parroquia[$k] = 'Los Coquitos';
         }elseif (strpos($descs[$k],'Los Coquitos')) {
@@ -297,7 +273,6 @@ class ArticuloController extends Controller
           $municipio[$k] = 'Desconocido';
           $parroquia[$k] = 'Desconocido';
         }
-
 
         $array = [
           "titulo"      => $titles[$k],
@@ -318,7 +293,7 @@ class ArticuloController extends Controller
         if ($validator->fails()) {
             continue;
         }else {
-          $articulo = new  Articulo;
+          $articulo = new Articulo;
           $articulo->titulo = $array['titulo'];
           $articulo->descripcion = $array['descripcion'];
           $articulo->link = $array['link'];
@@ -329,12 +304,67 @@ class ArticuloController extends Controller
           $articulo->periodico = $array['periodico'];
           $articulo->delito = $array['delito'];
           $articulo->save();
-
         }
       }
       return redirect()->route('listarticulos');
     }
 
 
-   
+    public function sanear_desc($desc1){
+        $subcadena = "View Comments";
+        $posubcadena = strpos ($desc1, $subcadena);
+        $string2 = substr ($desc1, ($posubcadena+13));
+        $string3 = explode('//<!',$string2);
+        $string4 = trim($string3[0]);
+        return $string4;
+    }
+
+
+  public function def_delito($desc){
+      //determinar delito
+      $count=0;
+
+      $asesinatos  = array('asesinado', 'el presunto asesino', 'asesinada', 'asesinato','lo ultimaron',
+      'fue ultimado', 'fue acribillado', 'luego de recibir un tiro', 'dio muerte', 'cadáver tiroteado',
+      'el homicidio', 'resultó abatido');
+      $robos = array('robo', 'los presuntos ladrones', 'los presuntos asaltantes', 'asalto');
+      $extorsiones = array('Extorsion', 'extorsion', 'extorsionadores', 'extorsionaron', 'extorsionaban');
+      $violaciones = array('Violador', 'violador', 'presunto violador', 'haber abusado sexualmente',
+      'abusado sexualmente');
+      $electrocutados = array('electrocutado','murio electrocutado','colision de vehiculos','Trafico de drogas');
+      $trafico_de_drogas = array('panelas de cocaína', 'cocaína', 'trafico de droga');
+      $indefidos = array('golpeo salvajemente','golpeo','sucicidios','suicidio');
+      $no_delitos = array('desaparecida');
+
+      $delitos = array(
+        'Asesinato'           =>  $asesinatos,
+        'Robo'                =>  $robos,
+        'Extorsion'           =>  $extorsiones,
+        'Violacion'           =>  $violaciones,
+        'Trafico_de_drogas'   =>  $trafico_de_drogas,
+        'Indefinido'          =>  $indefidos,
+        'No_delito'           =>  $no_delitos
+      );
+
+      foreach($delitos as $delito => $key){
+        foreach($key as $palabra){
+          if(strpos($desc,$palabra)){
+            $count++;
+          }
+        }
+        if($count>0){
+          return $delito;
+          break;
+        }
+      }
+      if($count<1){
+        return 'Indefinido';
+      }
+    }
+
+    public function reestablecer(){
+      Articulo::withTrashed()->restore();
+      echo "datos reestabecidos";
+    }
+
 }
