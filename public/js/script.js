@@ -24,10 +24,52 @@ function Mostrar(btn){
   $.get(route,function(art){
     $('#id').attr("value",art.id);
     $('#titulo').val(art.titulo);
-    $('#delito').val(art.delito);
     $('#link').val(art.link);
     $('#descripcion').val(art.descripcion);
     $('#periodico').val(art.periodico);
+    $('#fecha').val(art.fecha);
+    var delito = $('#delito').val(art.delito);
+    var estado = $('#estado').val(art.estado);
+    var municipio = $('#municipio').val(art.municipio);
+    var parroquia = $('#parroquia').val(art.parroquia);
+
+    for(var e = 1; e < 7; e++){
+      var del = $('#delito > option:nth-child('+i+')').val();
+      if(del == delito){
+        del.attr('selected','selected');
+      }
+    }
+    for(var i = 1; i < 3; i++) {
+      var est = $('#estado > option:nth-child('+i+')').val();
+      // var esta = est.val();
+      if( est == estado){
+        est.attr('selected','selected');
+
+      }
+    }
+    for(var i = 1; i < 3; i++) {
+      var est = $('#estado > option:nth-child('+i+')').val();
+      // var esta = est.val();
+      if( est == estado){
+        est.attr('selected','selected');
+
+      }
+    }
+    for(var o = 1; o < 3; o++) {
+      var mun = $('#municipio > option:nth-child('+o+')').val();
+      if( mun == municipio){
+        est.attr('selected','selected');
+      }
+    }
+
+    for(var u = 1; u < 10; u++) {
+      var mun = $('#parroquia > option:nth-child('+u+')').val();
+      if( mun == municipio){
+        est.attr('selected','selected');
+      }
+    }
+
+
   });
 
 }
@@ -80,6 +122,9 @@ $("#actualizar").click(function(){
   link = $('#link').val();
   descripcion = $('#descripcion').val();
   periodico = $('#periodico').val();
+  estado = $('#estado').val();
+  municipio = $('#municipio').val();
+  parroquia = $('#parroquia').val();
 	var route = "articulo/"+id;
 	var token = $('#token').val();
 
@@ -88,7 +133,7 @@ $("#actualizar").click(function(){
 		headers: {'X-CSRF-TOKEN': token},
 		type: 'PUT',
 		dataType: 'json',
-		data: {id:id,titulo:titulo,delito:delito,link:link,descripcion:descripcion,periodico:periodico},
+		data: {id:id,titulo:titulo,delito:delito,link:link,descripcion:descripcion,periodico:periodico,estado:estado,municipio:municipio,parroquia:parroquia},
 		success: function(json){
       pagina = $('.active').val();
       alert(pagina);

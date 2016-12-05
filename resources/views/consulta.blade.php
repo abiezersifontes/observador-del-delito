@@ -14,8 +14,19 @@
           <input type="text" class="form-control" id="titulo" name="titulo">
 
           <label for="delito">Delito</label>
-          <input type="text" class="form-control" id="delito" name="delito">
+          <select class="form-control" name="delito" id="delito">
+            <option value="Asesinato">Asesinato</option>
+            <option value="Robo">Robo</option>
+            <option value="Extorsion">Extorsion</option>
+            <option value="Violacion">Violacion</option>
+            <option value="Trafico_de_drogas">Trafico de drogas</option>
+            <option value="Indefinido">Indefinido</option>
+            <option value="No_delito">No delito</option>
+          </select>
 
+          <label for="fecha"></label>
+          <input type="date" class="form-control" id="fecha" name="fecha">
+          
           <label for="link">Link</label>
           <input type="text" class="form-control" id="link" name="link">
 
@@ -24,6 +35,35 @@
 
           <label for="periodico">Periodico</label>
           <input type="text" class="form-control" id="periodico" name="periodico">
+
+          <label for="estado">Estado</label>
+          <select name="estado" class="form-control" id="estado">
+            <option value="Bolivar">Bolívar</option>
+            <option value="Otros">Otros</option>
+            <option value="Desconocido">Desconocido</option>
+          </select>
+
+          <label for="municipio">Municipio</label>
+          <select name="municipio" class="form-control" id="municipio">
+            <option value="Heres">Heres</option>
+            <option value="Otros">Otros</option>
+            <option value="Desconocido">Desconocido</option>
+          </select>
+
+          <label for="parroquia">Parroquia</label>
+          <select name="parroquia" class="form-control" id="parroquia">
+            <option value="Agua_salada">Agua Salada</option>
+            <option value="Catedral">Catedral</option>
+            <option value="Jose_antonio_paez">Jose Antonio Paez</option>
+            <option value="La_sabanita">La Sabanita</option>
+            <option value="Marhuanta">Marhuanta</option>
+            <option value="Orinoco">Orinoco</option>
+            <option value="Panana">Panapana</option>
+            <option value="Zea">Zea</option>
+            <option value="Otros">Otros</option>
+            <option value="Desconocido">Desconocido</option>
+          </select>
+
 
         </div>
         <div class="modal-footer">
