@@ -102,33 +102,51 @@ class ArticuloController extends Controller
         return response()->json(['mensaje'=> "datos eliminados"]);
     }
 
+    // public function graficar($desde,$hasta){
+    //
+    //   /*$articulos = Articulo::whereBetween('fecha', [$fecha,  '2016-08-31'])->get();*/
+    //   $delitos = DB::table('articulos')
+    //                 ->select('delito')
+    //                 ->where('municipio','=','Heres')
+    //                 ->distinct()
+    //                 ->get();
+    //   //$cant_delitos =
+    //   foreach ($delitos as $delito) {
+    //     $cant_delitos[] = DB::table('articulos')
+    //                     ->where('municipio','=','Heres')
+    //                     ->where('delito','=',$delito->delito)
+    //                     ->whereBetween('fecha', [$desde, $hasta])
+    //                     ->count();
+    //   }
+    //   $info = [$delitos,$cant_delitos];
+    //   return response()->json([$info]);
+    // }
+
     public function graficar($desde,$hasta){
 
-      /*$articulos = Articulo::whereBetween('fecha', [$fecha,  '2016-08-31'])->get();*/
-      $delitos = DB::table('articulos')
-                    ->select('delito')
-                    ->where('municipio','=','Heres')
-                    ->distinct()
-                    ->get();
-      //$cant_delitos =
-      foreach ($delitos as $delito) {
-        $cant_delitos[] = DB::table('articulos')
-                        ->where('municipio','=','Heres')
-                        ->where('delito','=',$delito->delito)
-                        ->whereBetween('fecha', [$desde, $hasta])
-                        ->count();
-      }
+    $delis = array('Asesinato', 'Robo', 'Extorsion', 'Violacion', 'Trafico_de_drogas', 'Indefinido', 'No_delito');
 
-      $info = [$delitos,$cant_delitos];
-      return response()->json([$info]);
-    }
 
+         $delitos = DB::table('articulos')
+                       ->select('delito')
+                       ->distinct()
+                       ->get();
+
+         foreach ($delitos as $delito) {
+           $cant_delitos[] = DB::table('articulos')
+                           ->where('municipio','=','Heres')
+                           ->where('delito','=',$delito->delito)
+                           ->whereBetween('fecha', [$desde, $hasta])
+                           ->count();
+         }
+    
+         $info = [$delitos,$cant_delitos];
+         return response()->json([$info]);
+       }
 
     public function getUltimoDiaMes($elAnio,$elMes) {
     return date("d",(mktime(0,0,0,$elMes+1,1,$elAnio)-1));
    }
-
-
 
    public function graficar_barra($anio,$mes)
    {
@@ -246,12 +264,12 @@ class ArticuloController extends Controller
         if(strpos($descs[$k], 'estado Bolívar') or strpos($descs[$k], 'Estado Bolívar')){
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Desconocido';
-          $parroquia[$k] = 'Desconocida';
+          $parroquia[$k] = 'Desconocido';
         }elseif(strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Ciudad Bolivar') or strpos($descs[$k],'Heres') or strpos($descs[$k],'heres') or strpos($descs[$k],'HERES')
         or strpos($descs[$k],'Ciudad Bolívar')or strpos($descs[$k],'Municipio Heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'municipio heres') or strpos($descs[$k],'la capital bolivarense')){
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
-          $parroquia[$k] = 'Desconocida';
+          $parroquia[$k] = 'Desconocido';
         }elseif(strpos($descs[$k],'Marhuanta')){
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
@@ -259,15 +277,12 @@ class ArticuloController extends Controller
         }elseif (strpos($descs[$k],'Los Coquitos')) {
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
-          $parroquia[$k] = 'Los Coquitos';
-        }elseif (strpos($descs[$k],'Los Coquitos')) {
-          $estado[$k] = 'Bolivar';
-          $municipio[$k] = 'Heres';
-          $parroquia[$k] = 'Los Coquitos';
+          $parroquia[$k] = 'Catedral';
+
         }elseif (strpos($descs[$k],'La Sabanita')){
           $estado[$k] = 'Bolivar';
           $municipio[$k] = 'Heres';
-          $parroquia[$k] = 'Los Coquitos';
+          $parroquia[$k] = 'Sabanita';
         }else {
           $estado[$k] = 'Desconocido';
           $municipio[$k] = 'Desconocido';
