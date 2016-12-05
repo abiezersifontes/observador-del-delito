@@ -105,6 +105,8 @@ class ArticuloController extends Controller
     public function graficar($desde,$hasta){
 
       /*$articulos = Articulo::whereBetween('fecha', [$fecha,  '2016-08-31'])->get();*/
+      $delitos_pre = array('Asesinato', 'Robo', 'Extorsion', 'Violacion', 'Trafico_de_drogas', 'Indefinido', 'No_delito');
+
       $delitos = DB::table('articulos')
                     ->select('delito')
                     ->where('municipio','=','Heres')
@@ -117,7 +119,9 @@ class ArticuloController extends Controller
                         ->where('delito','=',$delito->delito)
                         ->whereBetween('fecha', [$desde, $hasta])
                         ->count();
-      }
+        }
+
+
 
       $info = [$delitos,$cant_delitos];
       return response()->json([$info]);
@@ -233,12 +237,11 @@ class ArticuloController extends Controller
       //Obtener descripciones
       for($i=0; $i<15; $i++){
         $crawler = $client->request('GET',$links[$i]);
-        $desc1[] = implode($crawler->filter('article[class="item-page"]')->each(function ($node) { return $node->text(); }));
+        $desc1 = implode($crawler->filter('article[class="item-page"]')->each(function ($node) { return $node->text(); }));
+        $descs[$i] = $this->sanear_desc($desc1);
       }
 
       for ($k=0; $k <15 ; $k++) {
-        //sanear descripcion
-        $descs[$k] = $this->sanear_desc($desc1[$k]);
 
         //definir delitos
         $delito[$k] = $this->def_delito($descs[$k]);
