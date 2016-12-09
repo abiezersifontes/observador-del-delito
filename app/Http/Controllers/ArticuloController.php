@@ -202,7 +202,7 @@ class ArticuloController extends Controller
       $crawler = $client->request('GET', 'http://www.diarioelprogreso.net/sucesos');
       //$crawler = $client->request('GET', 'http://www.diarioelprogreso.net/sucesos.html?start=15');
 
-      $periodico = 'el progreso';
+      $periodico = 'el_progreso';
 
       //Obtener los links
       $links = str_replace('html#disqus_threa','',$crawler->filter('a[class="jwDisqusListingCounterLink"]')->each(function ($node, $i) { return strval($node->attr('href')); }));
@@ -319,7 +319,6 @@ class ArticuloController extends Controller
       }
       return redirect()->route('listarticulos');
     }
-
 
     public function sanear_desc($desc1){
         $subcadena = "View Comments";

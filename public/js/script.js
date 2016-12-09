@@ -136,7 +136,6 @@ $("#actualizar").click(function(){
 		data: {id:id,titulo:titulo,delito:delito,link:link,descripcion:descripcion,periodico:periodico,estado:estado,municipio:municipio,parroquia:parroquia},
 		success: function(json){
       pagina = $('.active').val();
-      alert(pagina);
       Carga(pagina);
 			$("#myModal").modal('toggle');
 			$("#menssage-update").fadeIn();
